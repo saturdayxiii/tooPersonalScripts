@@ -33,4 +33,4 @@ if ($fileNamingFormat -eq "1") {
 } else {
     $format = $customFormat
 }
-$ytdlp $playlistUrl -f bestvideo+bestaudio --output "$outputDirectory\$format" --write-subs --add-metadata --metadata-from-title "%(url)s"
+& $ytdlp $playlistUrl -f bestvideo+bestaudio --output "$outputDirectory\$format" --write-subs --add-metadata --metadata-from-title "%(url)s"
