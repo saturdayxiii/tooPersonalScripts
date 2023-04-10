@@ -23,7 +23,7 @@ if ($prefps -eq "3") {
 #set fps
 
 if ($prefps -eq "1") {
-    $ffps = "0:23.976fps"
+    $fps = "0:23.976fps"
 } elseif ($prefps -eq "2") {
     $fps = "0:29.97fps"
 } else {
@@ -38,27 +38,27 @@ foreach ($file in $files) {
     $extension = $file.Extension
 
     if (($extension -eq ".mp4") -or ($extension -eq ".mkv") -or ($extension -eq ".webm")) {
-        $videoPath = Join-Path $sourceFolder $file.Name
-        $audioPath = Join-Path $sourceFolder ($file.BaseName + ".mka")
-        $vidOutput = Join-Path $sourceFolder ($file.BaseName + "-v.mkv")
-        $pureVidOutput = Join-Path $sourceFolder ($file.BaseName)
-        $outputPath = Join-Path $destinationFolder ($file.BaseName + ".mkv")
+        $videoFile = Join-Path $sourceFolder $file.Name
+        $audio = Join-Path $sourceFolder ($file.BaseName + ".mka")
+        $mkv = Join-Path $sourceFolder ($file.BaseName + "-v.mkv")
+        $vid = Join-Path $sourceFolder ($file.BaseName)
+        $output = Join-Path $destinationFolder ($file.BaseName + ".mkv")
 
         # Extract video
-        & $ffmpeg -fflags +genpts -i $videoPath -c:v copy -an -sn -dn -y $vidOutput
-        & $mkvextract $vidOutput tracks 0:$pureVidOutput
+        & $ffmpeg -fflags +genpts -i $videoFile -c:v copy -an -sn -dn -y $mkv
+        & $mkvextract $mkv tracks 0:$vid
 
         # Extract audio
-        & $ffmpeg -i $videoPath -vn -c:a copy -y $audioPath
+        & $ffmpeg -i $videoFile -vn -c:a copy -y $audio
 
         # Remux video and audio
-        & $mkvmerge --ui-language en --priority lower --output $outputPath --language 0:und --default-duration $fps $pureVidOutput --language 0:en $audioPath --track-order 0:0,1:0
+        & $mkvmerge --ui-language en --priority lower --output $output --language 0:und --default-duration $fps $vid --language 0:en $audio --track-order 0:0,1:0
 
         # Delete temporary files
-        Remove-Item $vidOutput
-        Remove-Item $audioPath
-        Remove-Item $pureVidOutput
+        Remove-Item $mkv
+        Remove-Item $audio
+        Remove-Item $vid
     }
 }
 
-pause
+# pause
